@@ -2,6 +2,8 @@
 -- reused rather than interactively selected over and over.
 local last_picked_target = nil
 
+vim.g.buck2 = vim.g.buck2 or "buck2"
+
 -- Runs `vim.ui.select` synchronously.
 local function blocking_select(items, opts)
     local co = assert(coroutine.running())
@@ -41,19 +43,19 @@ end
 local function build(target)
     -- TODO: Async, with `vim.notify` progress notifications.
     -- TODO: Populate quickfix list with build errors.
-    return run({'buck2', 'build', '--show-full-simple-output', target})
+    return run({vim.g.buck2, 'build', '--show-full-simple-output', target})
 end
 
 -- Build the target owning the current file and return its output path. Prompts
 -- the user in case multiple choices are available.
 local function current_file()
     local owner = pick_query(
-        {'buck2', 'uquery', ('owner(%s)'):format(vim.fn.expand('%:p'))},
+        {vim.g.buck2, 'uquery', ('owner(%s)'):format(vim.fn.expand('%:p'))},
         {prompt = 'Pick an owning target: '}
     )
 
     local debug_target = pick_query(
-        {'buck2', 'uquery', ('rdeps(//..., %s)'):format(owner)},
+        {vim.g.buck2, 'uquery', ('rdeps(//..., %s)'):format(owner)},
         {prompt = 'Pick the target to debug: '}
     )
 
@@ -64,7 +66,7 @@ end
 
 -- Select a target, build it and return its output path.
 local function select_target()
-    local target = pick_query({'buck2', 'targets', '//...'}, {prompt = 'Pick a target: '})
+    local target = pick_query({vim.g.buck2, 'targets', '//...'}, {prompt = 'Pick a target: '})
     last_picked_target = target
     return target
 end

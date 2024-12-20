@@ -6,6 +6,8 @@ This plugin makes no support/stability guarantees for now.
 
 ## Usage
 
+### nvim-dap integration
+
 `nvim-buck2` provides some helper functions to integrate Buck2 and [nvim-dap](https://github.com/mfussenegger/nvim-dap):
 
 - `dap.current_file` can be used to debug the current file. If the current file is not a leaf owned by a single target, `vim.ui.select` will be called to select a target.
@@ -37,4 +39,14 @@ dap.configurations.cpp = {
 }
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
+```
+
+### Custom Buck2 binary
+
+By default, nvim-buck2 expects a `buck2` binary to be available on the `PATH`.
+
+You can set `vim.g.buck2` to use a custom Buck2 binary (e.g. if you have a local build you want to use, or you use a launcher like [Buckle](https://github.com/benbrittain/buckle)):
+
+```lua
+vim.g.buck2 = 'buckle'
 ```
