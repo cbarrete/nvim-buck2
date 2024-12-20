@@ -41,6 +41,11 @@ dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 ```
 
+Because nvim-buck2 builds the target before debugging it (to ensure that it is up to date), it is possible that:
+
+- It will hang while the build is running (using `vim.notify` could alleviate this).
+- It will error out in an ugly way if the build fails (integrating with the quickfix list could help with this).
+
 ### Custom Buck2 binary
 
 By default, nvim-buck2 expects a `buck2` binary to be available on the `PATH`.
