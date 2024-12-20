@@ -76,8 +76,8 @@ end
 
 return {
     dap = {
+        current_file = current_file,
         select_target = select_target,
         last_target = last_target,
-        current_file = current_file,
     }
 }
