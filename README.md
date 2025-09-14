@@ -13,7 +13,7 @@ The `go_to_build_file` function can be used to jump to the `BUCK` file that owns
 For example:
 
 ```lua
-vim.keymap.set('n', 'gb', require('nvim_buck2').go_to_build_file)
+vim.keymap.set('n', 'gb', require('buck2').go_to_build_file)
 ```
 
 ### nvim-dap integration
@@ -32,7 +32,7 @@ local common_lldb_dap_config = {
     runInTerminal = true,
 }
 
-local buck2 = require('nvim_buck2')
+local buck2 = require('buck2')
 dap.configurations.cpp = {
     vim.tbl_extend('error', common_lldb_dap_config, {
         name = '[Buck2] Debug current file',
