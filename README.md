@@ -6,6 +6,16 @@ This plugin makes no support/stability guarantees for now.
 
 ## Usage
 
+### Go to build file
+
+The `go_to_build_file` function can be used to jump to the `BUCK` file that owns the current source file.
+
+For example:
+
+```lua
+vim.keymap.set('n', 'gb', require('nvim_buck2').go_to_build_file)
+```
+
 ### nvim-dap integration
 
 `nvim-buck2` provides some helper functions to integrate Buck2 and [nvim-dap](https://github.com/mfussenegger/nvim-dap):

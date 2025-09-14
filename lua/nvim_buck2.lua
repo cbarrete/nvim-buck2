@@ -46,8 +46,8 @@ local function build(target)
     return run({vim.g.buck2, 'build', '--show-full-simple-output', target})
 end
 
--- Build the target owning the current file and return its output path. Prompts
--- the user in case multiple choices are available.
+-- Build the target owning the current file and return its output path.
+-- Prompts the user if multiple choices are available.
 local function current_file()
     local owner = pick_query(
         {vim.g.buck2, 'uquery', ('owner(%s)'):format(vim.fn.expand('%:p'))},
@@ -76,10 +76,17 @@ local function last_target()
     return build(last_picked_target)
 end
 
+-- Jumps to the build file that owns the current file.
+local function go_to_build_file()
+    local build_file = run({vim.g.buck2, 'uquery', ('buildfile(owner(%s))'):format(vim.fn.expand('%:p'))})
+    vim.cmd.edit(build_file)
+end
+
 return {
     dap = {
         current_file = current_file,
         select_target = select_target,
         last_target = last_target,
-    }
+    },
+    go_to_build_file = go_to_build_file,
 }
