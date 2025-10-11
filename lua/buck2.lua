@@ -99,6 +99,11 @@ local function show_last_errors()
         end)
     end)
 
+    if buffer_contents == '' then
+        vim.notify("No errors to display", vim.log.levels.INFO)
+        return
+    end
+
     local bufnr = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, vim.split(buffer_contents, '\n'))
     vim.api.nvim_open_win(bufnr, true, {split = 'below'})
