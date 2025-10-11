@@ -23,7 +23,7 @@ The `show_last_errors` function can be used to put the errors from the last `buc
 For example:
 
 ```lua
-vim.keymap.set('n', '<Space>E', require('buck2').show_last_errors)
+vim.keymap.set('n', '<Space>e', require('buck2').show_last_errors)
 ```
 
 ### nvim-dap integration
