@@ -30,6 +30,9 @@ vim.keymap.set('n', '<Space>e', require('buck2').show_last_errors)
 
 ### nvim-dap integration
 
+> [!WARNING]
+> While the following functions still work, I no longer use them, as I find [generating `launch.json` files using BXL](https://github.com/cbarrete/buck2_toolbox?tab=readme-ov-file#launch_jsonbxl) to have a much better UX.
+
 `nvim-buck2` provides some helper functions to integrate Buck2 and [nvim-dap](https://github.com/mfussenegger/nvim-dap):
 
 - `dap.current_file` can be used to debug the current file. If the current file is not a leaf owned by a single target, `vim.ui.select` will be called to select a target.
