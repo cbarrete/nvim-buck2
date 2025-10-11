@@ -20,6 +20,8 @@ vim.keymap.set('n', 'gb', require('buck2').go_to_build_file)
 
 The `show_last_errors` function can be used to put the errors from the last `buck2 build` command in a scratch buffer, which will be displayed in a new window.
 
+This is useful when running `buck2 build` outside of Neovim, to either go to the source location of an error or seamlessly search/manipulate the errors from within Neovim.
+
 For example:
 
 ```lua
