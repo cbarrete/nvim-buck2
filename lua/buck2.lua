@@ -82,6 +82,28 @@ local function go_to_build_file()
     vim.cmd.edit(build_file)
 end
 
+-- Gets the errors for the last build command, and puts them in a scratch buffer.
+local function show_last_errors()
+    local output = run({vim.g.buck2, 'log', 'show'})
+    local lines = vim.split(output, '\n', {trimempty = true})
+
+    local buffer_contents = ''
+    table.foreach(lines, function(i, line)
+        local object = vim.json.decode(line)
+        if object['Result'] == nil then
+            return
+        end
+        local errors = object['Result']['result']['build_response']['errors']
+        table.foreach(errors, function(i, item)
+            buffer_contents = buffer_contents .. item['telemetry_message']
+        end)
+    end)
+
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, vim.split(buffer_contents, '\n'))
+    vim.api.nvim_open_win(bufnr, true, {split = 'below'})
+end
+
 return {
     dap = {
         current_file = current_file,
@@ -89,4 +111,5 @@ return {
         last_target = last_target,
     },
     go_to_build_file = go_to_build_file,
+    show_last_errors = show_last_errors,
 }

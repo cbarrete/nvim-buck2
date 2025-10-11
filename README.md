@@ -16,6 +16,16 @@ For example:
 vim.keymap.set('n', 'gb', require('buck2').go_to_build_file)
 ```
 
+### Show last errors
+
+The `show_last_errors` function can be used to put the errors from the last `buck2 build` command in a scratch buffer, which will be displayed in a new window.
+
+For example:
+
+```lua
+vim.keymap.set('n', '<Space>E', require('buck2').show_last_errors)
+```
+
 ### nvim-dap integration
 
 `nvim-buck2` provides some helper functions to integrate Buck2 and [nvim-dap](https://github.com/mfussenegger/nvim-dap):
