@@ -8,13 +8,9 @@ vim.g.buck2 = vim.g.buck2 or "buck2"
 local function blocking_select(items, opts)
     local co = assert(coroutine.running())
     local select_fn = function()
-        vim.ui.select(
-            items,
-            opts,
-            function(choice)
-                coroutine.resume(co, choice)
-            end
-        )
+        vim.ui.select(items, opts, function(choice)
+            coroutine.resume(co, choice)
+        end)
     end
     vim.schedule(select_fn)
     return coroutine.yield()
@@ -25,14 +21,14 @@ local function run(cmd)
     local output = vim.system(cmd):wait()
     assert(
         output.code == 0,
-        ('Failed to run `%s`.\nstdout:\n%s\nstderr:\n%s'):format(vim.inspect(cmd), output.stdout, output.stderr)
+        ("Failed to run `%s`.\nstdout:\n%s\nstderr:\n%s"):format(vim.inspect(cmd), output.stdout, output.stderr)
     )
     return vim.trim(output.stdout)
 end
 
 -- Runs a query-like command and prompts the user in case multiple choices are available.
 local function pick_query(cmd, select_opts)
-    local choices = vim.split(run(cmd), '\n', {trimempty = true})
+    local choices = vim.split(run(cmd), "\n", { trimempty = true })
     if #choices == 1 then
         return choices[1]
     else
@@ -43,20 +39,20 @@ end
 local function build(target)
     -- TODO: Async, with `vim.notify` progress notifications.
     -- TODO: Populate quickfix list with build errors.
-    return run({vim.g.buck2, 'build', '--show-full-simple-output', target})
+    return run({ vim.g.buck2, "build", "--show-full-simple-output", target })
 end
 
 -- Build the target owning the current file and return its output path.
 -- Prompts the user if multiple choices are available.
 local function current_file()
     local owner = pick_query(
-        {vim.g.buck2, 'uquery', ('owner(%s)'):format(vim.fn.expand('%:p'))},
-        {prompt = 'Pick an owning target: '}
+        { vim.g.buck2, "uquery", ("owner(%s)"):format(vim.fn.expand("%:p")) },
+        { prompt = "Pick an owning target: " }
     )
 
     local debug_target = pick_query(
-        {vim.g.buck2, 'uquery', ('rdeps(//..., %s)'):format(owner)},
-        {prompt = 'Pick the target to debug: '}
+        { vim.g.buck2, "uquery", ("rdeps(//..., %s)"):format(owner) },
+        { prompt = "Pick the target to debug: " }
     )
 
     last_picked_target = debug_target
@@ -66,7 +62,7 @@ end
 
 -- Select a target, build it and return its output path.
 local function select_target()
-    local target = pick_query({vim.g.buck2, 'targets', '//...'}, {prompt = 'Pick a target: '})
+    local target = pick_query({ vim.g.buck2, "targets", "//..." }, { prompt = "Pick a target: " })
     last_picked_target = target
     return target
 end
@@ -78,35 +74,35 @@ end
 
 -- Jumps to the build file that owns the current file.
 local function go_to_build_file()
-    local build_file = run({vim.g.buck2, 'uquery', ('buildfile(owner(%s))'):format(vim.fn.expand('%:p'))})
+    local build_file = run({ vim.g.buck2, "uquery", ("buildfile(owner(%s))"):format(vim.fn.expand("%:p")) })
     vim.cmd.edit(build_file)
 end
 
 -- Gets the errors for the last build command, and puts them in a scratch buffer.
 local function show_last_errors()
-    local output = run({vim.g.buck2, 'log', 'show'})
-    local lines = vim.split(output, '\n', {trimempty = true})
+    local output = run({ vim.g.buck2, "log", "show" })
+    local lines = vim.split(output, "\n", { trimempty = true })
 
-    local buffer_contents = ''
+    local buffer_contents = ""
     table.foreach(lines, function(i, line)
         local object = vim.json.decode(line)
-        if object['Result'] == nil then
+        if object["Result"] == nil then
             return
         end
-        local errors = object['Result']['result']['build_response']['errors']
+        local errors = object["Result"]["result"]["build_response"]["errors"]
         table.foreach(errors, function(i, item)
-            buffer_contents = buffer_contents .. item['telemetry_message']
+            buffer_contents = buffer_contents .. item["telemetry_message"]
         end)
     end)
 
-    if buffer_contents == '' then
+    if buffer_contents == "" then
         vim.notify("No errors to display", vim.log.levels.INFO)
         return
     end
 
     local bufnr = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, vim.split(buffer_contents, '\n'))
-    vim.api.nvim_open_win(bufnr, true, {split = 'below'})
+    vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, vim.split(buffer_contents, "\n"))
+    vim.api.nvim_open_win(bufnr, true, { split = "below" })
 end
 
 return {
